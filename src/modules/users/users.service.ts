@@ -1,8 +1,8 @@
 import {
-  BadRequestException,
+  BadRequestException, ForbiddenException,
   Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+  NotFoundException
+} from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
 import { InjectModel } from 'nest-knexjs';
 import { Knex } from 'knex';
@@ -58,7 +58,8 @@ export class UsersService {
     return { users, total };
   }
 
-  async update(id: number, { name, info, age }: UpdateUserDto) {
+  async update(userId: number, id: number, { name, info, age }: UpdateUserDto) {
+    if(userId !== id) throw new ForbiddenException('Not your account')
     await this.getOne(id);
 
     return this.knex.table('users').where({ id }).update({
@@ -68,7 +69,8 @@ export class UsersService {
     });
   }
 
-  async delete(id: number) {
+  async delete(userId: number, id: number) {
+    if(userId !== id) throw new ForbiddenException('Not your account')
     await this.knex.table('users').where({ id }).del();
   }
 }

@@ -15,6 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetManyUsersQueryDto } from './dto/get-many-users.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
+import { User, UserPayload } from "../../shared/decorators/user.decorator";
 
 @Controller('users')
 export class UsersController {
@@ -37,13 +38,13 @@ export class UsersController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
-    return this.usersService.update(id, dto);
+  update(@User() user: UserPayload, @Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
+    return this.usersService.update(user.id, id, dto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  delete(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.delete(id);
+  delete(@User() user: UserPayload, @Param('id', ParseIntPipe) id: number) {
+    return this.usersService.delete(user.id, id);
   }
 }
