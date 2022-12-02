@@ -5,9 +5,6 @@ export class AddProductToBasketDto {
   productId: number;
 
   @IsInt()
-  orderId: number;
-
-  @IsInt()
   @Min(1)
   amount: number;
 }
